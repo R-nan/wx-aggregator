@@ -1,0 +1,19 @@
+{
+  "name": "wxagg-serverless",
+  "version": "0.0.1",
+  "description": "Weather forecast aggregator that averages data from weather APIs like Wunderground and Yahoo Weather.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "weather",
+    "aggregator",
+    "serverless",
+    "aws",
+    "lambda",
+    "s3"
+  ],
+  "author": "Lei Zhao and Sze Chun Chan",
+  "license": "ISC"
+}
