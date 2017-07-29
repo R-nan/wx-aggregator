@@ -1,3 +1,3 @@
 export default {
-    'color-purple': '#673ab8'
+  'color-purple': '#673ab8'
 };
