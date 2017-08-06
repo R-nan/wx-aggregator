@@ -4,15 +4,20 @@ import { h, render } from 'preact';
 import Home from 'views/home/home';
 
 import Header from 'components/header/header';
+import DarkSky from 'components/apis/darksky';
+
 
 const renderApp = () => {
   render((
-    <article>
-      <Header title="Hey man Fuck off" />
-      <Router>
-        <Home path="/"/>
-      </Router>
-    </article>
+    <div class="main-container">
+      <div>
+        <Header title="Hey man Fuck off" />
+        <Router>
+          <Home path="/"/>
+        </Router>
+        <DarkSky />
+      </div>   
+    </div>
   ), document.getElementById('root'));
 };
 
