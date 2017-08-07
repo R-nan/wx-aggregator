@@ -1,15 +1,15 @@
 import { h } from 'preact';
 
 var data = require('../../fixtures/darksky.json');
-console.log(data['daily'])
+console.log(data['daily']);
 
-const DarkSky = (props) => (
+const DarkSky = (data, props) => (
   <div>
     <header>
       <h1>DarkSky</h1>
     </header>
     <div>
-      WHA
+      { data }
     </div>
   </div>
 );

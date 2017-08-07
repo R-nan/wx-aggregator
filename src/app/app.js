@@ -11,7 +11,7 @@ const renderApp = () => {
   render((
     <div class="main-container">
       <div>
-        <Header title="Hey man Fuck off" />
+        <Header title="Forecast aggregator" />
         <Router>
           <Home path="/"/>
         </Router>
