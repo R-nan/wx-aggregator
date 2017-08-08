@@ -4,9 +4,6 @@ import { h, render } from 'preact';
 import Home from 'views/home/home';
 
 import Header from 'components/header/header';
-import DarkSky from 'components/apis/darksky';
-
-var darkSkyData = require('./fixtures/darksky.json');
 
 const renderApp = () => {
   render((
@@ -16,7 +13,6 @@ const renderApp = () => {
         <Router>
           <Home path="/"/>
         </Router>
-        <DarkSky />
       </div>   
     </div>
   ), document.getElementById('root'));
