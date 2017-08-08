@@ -6,6 +6,7 @@ import Home from 'views/home/home';
 import Header from 'components/header/header';
 import DarkSky from 'components/apis/darksky';
 
+var darkSkyData = require('./fixtures/darksky.json');
 
 const renderApp = () => {
   render((
