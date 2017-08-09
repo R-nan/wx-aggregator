@@ -1,12 +1,6 @@
 import { h, render, Component } from 'preact';
 
 class DarkSky extends Component {
-  template(props) {
-    return(
-      JSON.stringify(props.data)      
-    );
-  }
-
   render(props) {
     return (
       <section>
@@ -14,7 +8,7 @@ class DarkSky extends Component {
           <h1>DarkSky</h1>
         </header>
         <div>
-          
+          {JSON.stringify(props.data)}
         </div>
       </section>
     );
