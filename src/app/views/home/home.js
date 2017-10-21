@@ -26,12 +26,22 @@ const darkSkyDataMassager = (data) => {
   return payload;
 };
 
+
 class Home extends Component {
+  constructor() {
+    super();
+    this.state.daysForecast = darkSkyDataMassager(darkSkyData);
+  }
+
+  componentDidMount() {
+    console.log(this.state.daysForecast);
+  }
+
   render() {
     return (
       <main>
         <p className={styles.text}>It feels like home</p>
-        <DarkSky data={darkSkyDataMassager(darkSkyData)} />
+        <DarkSky daysForecast={this.state.daysForecast} />
       </main>
     );
   }
