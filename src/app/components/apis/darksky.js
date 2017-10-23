@@ -14,13 +14,12 @@ class DarkSky extends Component {
           {props.daysForecast.map((forecast) => {
             return <li>
               <p>{forecast.time}</p>
-              <p>{forecast.maxTemp}</p>
-              <p>{forecast.minTemp}</p>
-              <p>{forecast.humidity}</p>
-              <p>{forecast.pop}</p>
-              <p>{forecast.pType}</p>
-              <p>{forecast.windDir}</p>
-              <p>{forecast.windSpeed}</p>
+              <p>High: {forecast.maxTemp}°F</p>
+              <p>Low: {forecast.minTemp}°F</p>
+              <p>Humidity: {forecast.humidity}%</p>
+              <p>Chance of Precip: {forecast.pop}% of {forecast.pType}</p>
+              <p>Wind Direction: {forecast.windDir}</p>
+              <p>Wind Speed: {forecast.windSpeed}</p>
             </li>
           })}
           </ul>

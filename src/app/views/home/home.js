@@ -10,13 +10,13 @@ const darkSkyDataMassager = (data) => {
   var forecasts = data['daily']['data'];
   var payload = [];
 
-  for (var i in forecasts) {
+  for (var i = 0; i < 5; i++) {
     payload.push({
       'time': forecasts[i]['time'],
       'maxTemp': forecasts[i]['temperatureMax'], 
       'minTemp': forecasts[i]['temperatureMin'],
-      'humidity': forecasts[i]['humidity'],
-      'pop': forecasts[i]['precipProbability'],
+      'humidity': Math.round(forecasts[i]['humidity'] * 100),
+      'pop': forecasts[i]['precipProbability'] * 100,
       'pType': forecasts[i]['precipType'],
       'windDir': forecasts[i]['windBearing'],
       'windSpeed': forecasts[i]['windSpeed']

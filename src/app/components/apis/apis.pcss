@@ -1,8 +1,15 @@
 .forecast_grid {
-  display: inline-block;
   list-style-type: none;
+  padding-left: 0px;
 
   & li {
-    border: 1px solid red;
+    border: 1px solid #ddd;
+    display: inline-block;
+    min-width: 100px;
+    vertical-align: top;
+
+    & p {
+      margin: .5em .7em; 
+    }
   }
 }
