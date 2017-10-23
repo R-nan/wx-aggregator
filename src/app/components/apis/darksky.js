@@ -18,8 +18,7 @@ class DarkSky extends Component {
               <p>Low: {forecast.minTemp}°F</p>
               <p>Humidity: {forecast.humidity}%</p>
               <p>Chance of Precip: {forecast.pop}% of {forecast.pType}</p>
-              <p>Wind Direction: {forecast.windDir}</p>
-              <p>Wind Speed: {forecast.windSpeed}</p>
+              <p>Wind Speed: {forecast.windSpeed} mph {forecast.windDir}</p>
             </li>
           })}
           </ul>
