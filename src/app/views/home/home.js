@@ -26,7 +26,6 @@ const darkSkyDataMassager = (data) => {
   return payload;
 };
 
-
 class Home extends Component {
   constructor() {
     super();
@@ -40,7 +39,7 @@ class Home extends Component {
   render() {
     return (
       <main>
-        <p className={styles.text}>It feels like home</p>
+        <p class={styles.text}>It feels like home</p>
         <DarkSky daysForecast={this.state.daysForecast} />
       </main>
     );
