@@ -2,8 +2,10 @@ import { h, Component } from 'preact';
 
 import styles from './home.pcss';
 
+import Aeris from 'components/apis/aeris';
 import DarkSky from 'components/apis/darksky';
 
+var aerisData = require('../../fixtures/aeris.json');
 var darkSkyData = require('../../fixtures/darksky.json');
 
 // Converts wind direction in degress to cardinal directions
@@ -41,6 +43,25 @@ const convertUnixTime = (unixTime) => {
   return new Date(unixTime * 1000).toLocaleDateString('en-us', options);
 };
 
+const aerisDataMassager = (data) => {
+  var forecasts = data['response'][0]['periods'];
+  var payload = [];
+
+  for (var i = 0; i < 5; i++) {
+    payload.push({
+      'time': convertUnixTime(forecasts[i]['timestamp']),
+      'maxTemp': forecasts[i]['maxTempF'], 
+      'minTemp': forecasts[i]['minTempF'],
+      'humidity': Math.round(forecasts[i]['humidity']),
+      'pop': forecasts[i]['pop'],
+      'windDir': forecasts[i]['windDir'],
+      'windSpeed': forecasts[i]['windSpeedMPH']
+    });
+  }
+
+  return payload;
+};
+
 const darkSkyDataMassager = (data) => {
   var forecasts = data['daily']['data'];
   var payload = [];
@@ -64,7 +85,8 @@ const darkSkyDataMassager = (data) => {
 class Home extends Component {
   constructor() {
     super();
-    this.state.daysForecast = darkSkyDataMassager(darkSkyData);
+    this.state.aerisDaysForecast = aerisDataMassager(aerisData);
+    this.state.darkSkyDaysForecast = darkSkyDataMassager(darkSkyData);
   }
 
   componentDidMount() {
@@ -75,7 +97,8 @@ class Home extends Component {
     return (
       <main>
         <p class={styles.text}>It feels like home</p>
-        <DarkSky daysForecast={this.state.daysForecast} />
+        <Aeris daysForecast={this.state.aerisDaysForecast} />
+        <DarkSky daysForecast={this.state.darkSkyDaysForecast} />
       </main>
     );
   }
