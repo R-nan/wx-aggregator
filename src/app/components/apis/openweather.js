@@ -10,7 +10,18 @@ class OpenWeather extends Component {
           <h1>Open Weather Map</h1>
         </header>
         <div>
-
+          <ul class={styles.forecast_grid}>
+          {props.daysForecast.map((forecast) => {
+            return <li>
+              <p>{forecast.time}</p>
+              <p>{forecast.descrip}</p>
+              <p>High: {forecast.maxTemp}°F</p>
+              <p>Low: {forecast.minTemp}°F</p>
+              <p>Humidity: {forecast.humidity}%</p>
+              <p>Wind Speed: {forecast.windSpeed} mph {forecast.windDir}</p>
+            </li>
+          })}
+          </ul>
         </div>
       </section>
     );
