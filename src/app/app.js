@@ -7,12 +7,14 @@ import Header from 'components/header/header';
 
 const renderApp = () => {
   render((
-    <article>
-      <Header title="Hey man Fuck off" />
-      <Router>
-        <Home path="/"/>
-      </Router>
-    </article>
+    <div class="main-container">
+      <div>
+        <Header title="Forecast aggregator" />
+        <Router>
+          <Home path="/"/>
+        </Router>
+      </div>   
+    </div>
   ), document.getElementById('root'));
 };
 
