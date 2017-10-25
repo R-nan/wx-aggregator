@@ -7,6 +7,7 @@ import DarkSky from 'components/apis/darksky';
 
 var aerisData = require('../../fixtures/aeris.json');
 var darkSkyData = require('../../fixtures/darksky.json');
+var openWeatherData = require('../../fixtures/openweathermap.json');
 
 // Converts wind direction in degress to cardinal directions
 const convertWindDir = (degrees) => {
@@ -82,15 +83,36 @@ const darkSkyDataMassager = (data) => {
   return payload;
 };
 
+const openWeatherDataMassager = (data) => {
+  var forecasts = data['list'];
+  var payload = [];
+
+  // for (var i = 0; i < 5; i++) {
+  //   payload.push({
+  //     'time': convertUnixTime(forecasts[i]['time']),
+  //     'maxTemp': forecasts[i]['temperatureMax'], 
+  //     'minTemp': forecasts[i]['temperatureMin'],
+  //     'humidity': Math.round(forecasts[i]['humidity'] * 100),
+  //     'pop': forecasts[i]['precipProbability'] * 100,
+  //     'pType': forecasts[i]['precipType'],
+  //     'windDir': convertWindDir(forecasts[i]['windBearing']),
+  //     'windSpeed': forecasts[i]['windSpeed']
+  //   });
+  // }
+
+  return forecasts;
+};
+
 class Home extends Component {
   constructor() {
     super();
     this.state.aerisDaysForecast = aerisDataMassager(aerisData);
     this.state.darkSkyDaysForecast = darkSkyDataMassager(darkSkyData);
+    this.state.openWeatherDaysForecast = openWeatherDataMassager(openWeatherData);
   }
 
   componentDidMount() {
-    console.log(this.state.daysForecast);
+    console.log(this.state.openWeatherDaysForecast);
   }
 
   render() {
