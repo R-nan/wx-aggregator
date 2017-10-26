@@ -7,17 +7,17 @@
      FROM EACH FORECAST API SOURCE AND OUTPUTS
      THAT TO DATA TO A NEW JSON
 
-                +----------------+
-                |                |
-          +-----+  AGGREGATOR λ  <------+
-          |     |                |      |
-          |     +----------------+      |
-          |                             |
-          |                             |
-          |   +---------------------------------------+                                     CLIENT (ALSO ON S3)
-          |   |                         |             |
-          |   |    S3 BUCKET (JSON OBJS)|             |                           X-------------------------------------X
-          |   |                         |             |                           |                                     |
+                +----------------+                        SEARCH λ TAKES IN A
+                |                |                        ZIP SEARCH TERM AND
+          +-----+  AGGREGATOR λ  <------+                 REFERENCES IT AGAINST
+          |     |                |      |                 THE JSON FOR EACH
+          |     +----------------+      |                 FORECAST API SOURCE
+          |                             |                 AS WELL AS THE
+          |                             |                 AGGREGATE AVERAGE.
+          |   +---------------------------------------+   IT PASSES THIS JSON               CLIENT (ALSO ON S3)
+          |   |                         |             |   TO THE CLIENT APP'S
+          |   |    S3 BUCKET (JSON OBJS)|             |   REACT COMPONENTS FOR    X+-----------------------------------+X
+          |   |                         |             |   RENDERING.              +                                     +
 X+------------------------------------------------+   |                           |      +-----------------------+      |
 +         |   |                         |         |   |           +----------------------+     SEARCH INPUT      |      |
 |         |   |                         |         |   |           |               |      +-----------------------+      |
@@ -29,32 +29,32 @@ X+------------------------------------------------+   |                         
 |                       |  INDIVIDUAL JSONS   |   |   |    |          |           |                                     |
 |                       |  FOR EACH FORECAST  <-------+----> SEARCH λ +--------+  |    +---------------------------+    |
 |   +----------+        |  API SOURCE         |   |        |          |        |  |    |    REACT COMPONENTS FOR   |    |
-|   |          |        |                     |   |        +----------+        +------->    EACH FORECAST SOURCE   |    |
-|   | ZIPCODES |        |                     |   |                            |  |    |                           |    |
-|   |          |        +---------------^-----+   |     SEARCH λ TAKES IN A    |  |    +---------------------------+    |
-|   +-+--------+                        |         |     ZIP SEARCH TERM AND    |  |    |                           |    |
-|     |                                 |         |     REFERENCES IT AGAINST  +------->    AGGREGATOR COMPONENT   |    |
-|     |                                 |         |     THE JSON FOR EACH         |    |                           |    |
-X+------------------------------------------------+     FORECAST API SOURCE       |    +---------------------------+    |
-      |                                 |               AS WELL AS THE            |                                     |
-      |                                 |               AGGREGATE AVERAGE.        |                                     |
-      |                                 |               IT PASSES THIS JSON       X-------------------------------------X
-      |                                 |               TO THE CLIENT APP'S
-      |   +----------+                  |               REACT COMPONENTS FOR
-      |   |          |                  |               RENDERING.
-      +--->  API λS  +------------------+
-          |          |
-          +--+---^---+     API λS ITERATE THROUGH ZIPCODES JSON
-             |   |         PING INDIVIDUAL FORECAST APIS EVERY
-             |   |         3 HOURS AND OUTPUTS A NEW JSON FILE
-             |   |         WITH FORECASTS FOR EVERY ZIP FOR EACH
-             |   |         FORECAST API SOURCE.
-             |   |
-      +------v---+------+
-      |                 |
-      |                 |
-      |  EXTERNAL APIS  |
-      |                 |
-      |                 |
-      +-----------------+
+|   |          |        |                     |   |        +------+---+        +------->    EACH FORECAST SOURCE   |    |
+|   | ZIPCODES |        |                     |   |               |            |  |    |                           |    |
+|   |          |        +---------------^-----+   |               |            |  |    +---------------------------+    |
+|   +-+--------+                        |         |               |            |  |    |                           |    |
+|     |                                 |         |               |            +------->    AGGREGATOR COMPONENT   |    |
++     |                                 |         |               |               |    |                           |    |
+X+------------------------------------------------+               |               |    +---------------------------+    |
+      |                                 |                         |               |                                     |
+      |                                 |                         |               +                                     +
+      |                                 |                         |               X+-----------------------------------+X
+      |                                 |                         |
+      |                            +----+-----+                   |
+      |                            |          |                   |
+      +---------------------------->  API λS  <-------------------+
+                                   |          |
+                                   +--+---^---+
+                                      |   |         API λS ARE TRIGGERED IF SEARCH DOESN'T
+                                      |   |         FIND AN EXISTING FORECAST JSON FOR THE
+                                      |   |         SUBMITTED ZIP CODE THAT'S LESS THAN 6
+                                      |   |         HOURS OLD. IF SUCH A FILE ALREADY EXISTS,
+                               +------v---+------+  NO ADDITIONAL API CALLS ARE NEEDED.
+                               |                 |
+                               |                 |
+                               |  EXTERNAL APIS  |
+                               |                 |
+                               |                 |
+                               +-----------------+
+
 ```
