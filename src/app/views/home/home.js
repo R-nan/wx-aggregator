@@ -5,8 +5,10 @@ import styles from './home.pcss';
 import Aeris from 'components/apis/aeris';
 import DarkSky from 'components/apis/darksky';
 import OpenWeather from 'components/apis/openweather';
+import ApiXU from 'components/apis/apixu';
 
 var aerisData = require('../../fixtures/aeris.json');
+var apixuData = require('../../fixtures/apixu.json');
 var darkSkyData = require('../../fixtures/darksky.json');
 var openWeatherData = require('../../fixtures/openweathermap.json');
 
@@ -27,6 +29,16 @@ const convertUnixTime = (unixTime) => {
   };
   
   return new Date(unixTime * 1000).toLocaleDateString('en-us', options);
+};
+
+// Converts Epoch timestamps to human readable dates
+const convertEpochTime = (epochTime) => {
+  var options = {
+    weekday: 'short', year: 'numeric', month: 'short',
+    day: 'numeric'
+  };
+  
+  return new Date(epochTime * 60000).toLocaleDateString('en-us', options);
 };
 
 // Converts wind direction in degress to cardinal directions
@@ -70,6 +82,24 @@ const aerisDataMassager = (data) => {
       'pop': forecasts[i]['pop'],
       'windDir': forecasts[i]['windDir'],
       'windSpeed': forecasts[i]['windSpeedMPH']
+    });
+  }
+
+  return payload;
+};
+
+const apixuDataMassager = (data) => {
+  var forecasts = data['forecast']['forecastday'];
+  var payload = [];
+
+  for (var i in forecasts) {
+    payload.push({
+      'time': convertUnixTime(forecasts[i]['date_epoch']),
+      'descrip': forecasts[i]['day']['condition']['text'],
+      'maxTemp': forecasts[i]['day']['maxtemp_f'], 
+      'minTemp': forecasts[i]['day']['mintemp_f'],
+      'humidity': Math.round(forecasts[i]['day']['avghumidity']),
+      'windSpeed': forecasts[i]['day']['maxwind_mph']
     });
   }
 
@@ -122,12 +152,13 @@ class Home extends Component {
   constructor() {
     super();
     this.state.aerisDaysForecast = aerisDataMassager(aerisData);
+    this.state.apixuDaysForecast = apixuDataMassager(apixuData);
     this.state.darkSkyDaysForecast = darkSkyDataMassager(darkSkyData);
     this.state.openWeatherDaysForecast = openWeatherDataMassager(openWeatherData);
   }
 
   componentDidMount() {
-    console.log(this.state.openWeatherDaysForecast);
+    console.log(this.state.apixuDaysForecast);
   }
 
   render() {
@@ -135,6 +166,7 @@ class Home extends Component {
       <main>
         <p class={styles.text}>It feels like home</p>
         <Aeris daysForecast={this.state.aerisDaysForecast} />
+        <ApiXU daysForecast={this.state.apixuDaysForecast} />
         <DarkSky daysForecast={this.state.darkSkyDaysForecast} />
         <OpenWeather daysForecast={this.state.openWeatherDaysForecast} />        
       </main>
