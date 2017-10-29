@@ -91,16 +91,27 @@ const aerisDataMassager = (data) => {
 const apixuDataMassager = (data) => {
   var forecasts = data['forecast']['forecastday'];
   var payload = [];
+  var pop = [];
+  var windDir = [];  
 
   for (var i in forecasts) {
+    var hours = forecasts[i]['hour'];
+
     payload.push({
       'time': convertUnixTime(forecasts[i]['date_epoch']),
       'descrip': forecasts[i]['day']['condition']['text'],
       'maxTemp': forecasts[i]['day']['maxtemp_f'], 
       'minTemp': forecasts[i]['day']['mintemp_f'],
       'humidity': Math.round(forecasts[i]['day']['avghumidity']),
+      'pop': (pop.reduce((a, b) => a + b, 0) / 24) * 100,
+      'windDir': convertWindDir(windDir.reduce((a, b) => a + b, 0) / 24),
       'windSpeed': forecasts[i]['day']['maxwind_mph']
     });
+
+    for (var i in hours) {
+      pop.push(hours[i]['will_it_rain']);
+      windDir.push(hours[i]['wind_degree']);
+    }    
   }
 
   return payload;

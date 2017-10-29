@@ -18,7 +18,7 @@ class ApiXU extends Component {
               <p>High: {forecast.maxTemp}°F</p>
               <p>Low: {forecast.minTemp}°F</p>
               <p>Humidity: {forecast.humidity}%</p>
-              <p>Chance of Precip: {forecast.pop}% of {forecast.pType}</p>
+              <p>Chance of Precip: {forecast.pop}%</p>
               <p>Wind Speed: {forecast.windSpeed} mph {forecast.windDir}</p>
             </li>
           })}
