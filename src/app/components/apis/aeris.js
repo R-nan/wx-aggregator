@@ -14,6 +14,7 @@ class Aeris extends Component {
           {props.daysForecast.map((forecast) => {
             return <li>
               <p>{forecast.time}</p>
+              <p>{forecast.descrip}</p>
               <p>High: {forecast.maxTemp}°F</p>
               <p>Low: {forecast.minTemp}°F</p>
               <p>Humidity: {forecast.humidity}%</p>
