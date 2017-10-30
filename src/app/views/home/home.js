@@ -5,10 +5,12 @@ import styles from './home.pcss';
 import Aeris from 'components/apis/aeris';
 import DarkSky from 'components/apis/darksky';
 import OpenWeather from 'components/apis/openweather';
+import WeatherUnderground from 'components/apis/wunderground';
 
 var aerisData = require('../../fixtures/aeris.json');
 var darkSkyData = require('../../fixtures/darksky.json');
 var openWeatherData = require('../../fixtures/openweathermap.json');
+var wundergroundData = require('../../fixtures/wunderground.json');
 
 
 // Conversion functions
@@ -25,7 +27,7 @@ const convertUnixTime = (unixTime) => {
     weekday: 'short', year: 'numeric', month: 'short',
     day: 'numeric'
   };
-  
+
   return new Date(unixTime * 1000).toLocaleDateString('en-us', options);
 };
 
@@ -33,21 +35,21 @@ const convertUnixTime = (unixTime) => {
 const convertWindDir = (degrees) => {
   var val = Math.round((((degrees/22.5) + 0.5)) % 16);
   const directions = [
-    'N', 
-    'NNE', 
-    'NE', 
-    'ENE', 
-    'E', 
-    'ESE', 
-    'SE', 
-    'SSE', 
-    'S', 
-    'SSW', 
-    'SW', 
-    'WSW', 
-    'W', 
-    'WNW', 
-    'NW', 
+    'N',
+    'NNE',
+    'NE',
+    'ENE',
+    'E',
+    'ESE',
+    'SE',
+    'SSE',
+    'S',
+    'SSW',
+    'SW',
+    'WSW',
+    'W',
+    'WNW',
+    'NW',
     'NNW'
   ];
 
@@ -64,7 +66,7 @@ const aerisDataMassager = (data) => {
     payload.push({
       'time': convertUnixTime(forecasts[i]['timestamp']),
       'descrip': forecasts[i]['weather'],
-      'maxTemp': forecasts[i]['maxTempF'], 
+      'maxTemp': forecasts[i]['maxTempF'],
       'minTemp': forecasts[i]['minTempF'],
       'humidity': Math.round(forecasts[i]['humidity']),
       'pop': forecasts[i]['pop'],
@@ -84,7 +86,7 @@ const darkSkyDataMassager = (data) => {
     payload.push({
       'time': convertUnixTime(forecasts[i]['time']),
       'descrip': forecasts[i]['summary'],
-      'maxTemp': forecasts[i]['temperatureMax'], 
+      'maxTemp': forecasts[i]['temperatureMax'],
       'minTemp': forecasts[i]['temperatureMin'],
       'humidity': Math.round(forecasts[i]['humidity'] * 100),
       'pop': forecasts[i]['precipProbability'] * 100,
@@ -105,11 +107,30 @@ const openWeatherDataMassager = (data) => {
     payload.push({
       'time': convertUnixTime(forecasts[i]['dt']),
       'descrip': forecasts[i]['weather'][0]['description'],
-      'maxTemp': convertKToF(forecasts[i]['temp']['max']), 
+      'maxTemp': convertKToF(forecasts[i]['temp']['max']),
       'minTemp': convertKToF(forecasts[i]['temp']['min']),
       'humidity': Math.round(forecasts[i]['humidity']),
       'windDir': convertWindDir(forecasts[i]['deg']),
       'windSpeed': forecasts[i]['speed']
+    });
+  }
+
+  return payload;
+};
+
+const wundergroundDataMassager = (data) => {
+  var forecasts = data['forecast']['simpleforecast']['forecastday'];
+  var payload = [];
+
+  for (var i in forecasts) {
+    payload.push({
+      'time': convertUnixTime(forecasts[i]['date']['epoch']),
+      'descrip': forecasts[i]['conditions'],
+      'maxTemp': forecasts[i]['high']['fahrenheit'],
+      'minTemp': forecasts[i]['low']['fahrenheit'],
+      'humidity': forecasts[i]['avehumidity'],
+      'windDir': forecasts[i]['avewind']['dir'],
+      'windSpeed': forecasts[i]['avewind']['mph']
     });
   }
 
@@ -124,10 +145,11 @@ class Home extends Component {
     this.state.aerisDaysForecast = aerisDataMassager(aerisData);
     this.state.darkSkyDaysForecast = darkSkyDataMassager(darkSkyData);
     this.state.openWeatherDaysForecast = openWeatherDataMassager(openWeatherData);
+    this.state.wundergroundDaysForecast = wundergroundDataMassager(wundergroundData);
   }
 
   componentDidMount() {
-    console.log(this.state.openWeatherDaysForecast);
+    console.log(this.state.wundergroundDaysForecast);
   }
 
   render() {
@@ -136,7 +158,8 @@ class Home extends Component {
         <p class={styles.text}>It feels like home</p>
         <Aeris daysForecast={this.state.aerisDaysForecast} />
         <DarkSky daysForecast={this.state.darkSkyDaysForecast} />
-        <OpenWeather daysForecast={this.state.openWeatherDaysForecast} />        
+        <OpenWeather daysForecast={this.state.openWeatherDaysForecast} />
+        <WeatherUnderground daysForecast={this.state.wundergroundDaysForecast} />
       </main>
     );
   }
