@@ -122,13 +122,14 @@ const wundergroundDataMassager = (data) => {
   var forecasts = data['forecast']['simpleforecast']['forecastday'];
   var payload = [];
 
-  for (var i in forecasts) {
+  for (var i = 0; i < 5; i++) {
     payload.push({
       'time': convertUnixTime(forecasts[i]['date']['epoch']),
       'descrip': forecasts[i]['conditions'],
       'maxTemp': forecasts[i]['high']['fahrenheit'],
       'minTemp': forecasts[i]['low']['fahrenheit'],
       'humidity': forecasts[i]['avehumidity'],
+      'pop': forecasts[i]['pop'],
       'windDir': forecasts[i]['avewind']['dir'],
       'windSpeed': forecasts[i]['avewind']['mph']
     });
