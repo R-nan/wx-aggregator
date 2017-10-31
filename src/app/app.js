@@ -13,7 +13,7 @@ const renderApp = () => {
         <Router>
           <Home path="/"/>
         </Router>
-      </div>   
+      </div>
     </div>
   ), document.getElementById('root'));
 };
