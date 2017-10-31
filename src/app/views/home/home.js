@@ -31,16 +31,6 @@ const convertUnixTime = (unixTime) => {
   return new Date(unixTime * 1000).toLocaleDateString('en-us', options);
 };
 
-// Converts Epoch timestamps to human readable dates
-const convertEpochTime = (epochTime) => {
-  var options = {
-    weekday: 'short', year: 'numeric', month: 'short',
-    day: 'numeric'
-  };
-  
-  return new Date(epochTime * 60000).toLocaleDateString('en-us', options);
-};
-
 // Converts wind direction in degress to cardinal directions
 const convertWindDir = (degrees) => {
   var val = Math.round((((degrees/22.5) + 0.5)) % 16);
