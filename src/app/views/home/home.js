@@ -3,11 +3,13 @@ import { h, Component } from 'preact';
 import styles from './home.pcss';
 
 import Aeris from 'components/apis/aeris';
+import ApiXU from 'components/apis/apixu';
 import DarkSky from 'components/apis/darksky';
 import OpenWeather from 'components/apis/openweather';
 import WeatherUnderground from 'components/apis/wunderground';
 
 var aerisData = require('../../fixtures/aeris.json');
+var apixuData = require('../../fixtures/apixu.json');
 var darkSkyData = require('../../fixtures/darksky.json');
 var openWeatherData = require('../../fixtures/openweathermap.json');
 var wundergroundData = require('../../fixtures/wunderground.json');
@@ -78,6 +80,35 @@ const aerisDataMassager = (data) => {
   return payload;
 };
 
+const apixuDataMassager = (data) => {
+  var forecasts = data['forecast']['forecastday'];
+  var payload = [];
+  var pop = [];
+  var windDir = [];  
+
+  for (var i in forecasts) {
+    var hours = forecasts[i]['hour'];
+
+    payload.push({
+      'time': convertUnixTime(forecasts[i]['date_epoch']),
+      'descrip': forecasts[i]['day']['condition']['text'],
+      'maxTemp': forecasts[i]['day']['maxtemp_f'], 
+      'minTemp': forecasts[i]['day']['mintemp_f'],
+      'humidity': Math.round(forecasts[i]['day']['avghumidity']),
+      'pop': (pop.reduce((a, b) => a + b, 0) / 24) * 100,
+      'windDir': convertWindDir(windDir.reduce((a, b) => a + b, 0) / 24),
+      'windSpeed': forecasts[i]['day']['maxwind_mph']
+    });
+
+    for (var i in hours) {
+      pop.push(hours[i]['will_it_rain']);
+      windDir.push(hours[i]['wind_degree']);
+    }    
+  }
+
+  return payload;
+};
+
 const darkSkyDataMassager = (data) => {
   var forecasts = data['daily']['data'];
   var payload = [];
@@ -143,6 +174,7 @@ class Home extends Component {
   constructor() {
     super();
     this.state.aerisDaysForecast = aerisDataMassager(aerisData);
+    this.state.apixuDaysForecast = apixuDataMassager(apixuData);
     this.state.darkSkyDaysForecast = darkSkyDataMassager(darkSkyData);
     this.state.openWeatherDaysForecast = openWeatherDataMassager(openWeatherData);
     this.state.wundergroundDaysForecast = wundergroundDataMassager(wundergroundData);
@@ -157,6 +189,7 @@ class Home extends Component {
       <main>
         <p class={styles.text}>It feels like home</p>
         <Aeris daysForecast={this.state.aerisDaysForecast} />
+        <ApiXU daysForecast={this.state.apixuDaysForecast} />
         <DarkSky daysForecast={this.state.darkSkyDaysForecast} />
         <OpenWeather daysForecast={this.state.openWeatherDaysForecast} />
         <WeatherUnderground daysForecast={this.state.wundergroundDaysForecast} />
