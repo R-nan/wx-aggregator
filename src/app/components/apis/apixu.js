@@ -2,15 +2,15 @@ import { h, render, Component } from 'preact';
 
 import styles from './apis.pcss';
 
-class WeatherUnderground extends Component {
-  render(props){
+class ApiXU extends Component {
+  render(props) {
     return (
-      <section class="weatherUnderground">
+      <section class="apixu">
         <header>
-          <h1>Weather Underground</h1>
+          <h1>ApiXU</h1>
         </header>
         <div>
-          <ul class={styles.forecast_grid}>
+          <ul class={styles.forecast_grid}>        
           {props.daysForecast.map((forecast) => {
             return <li>
               <p>{forecast.time}</p>
@@ -25,8 +25,8 @@ class WeatherUnderground extends Component {
           </ul>
         </div>
       </section>
-    )
+    );
   }
 }
 
-export default WeatherUnderground;
+export default ApiXU;

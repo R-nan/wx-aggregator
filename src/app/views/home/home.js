@@ -3,14 +3,18 @@ import { h, Component } from 'preact';
 import styles from './home.pcss';
 
 import Aeris from 'components/apis/aeris';
+import ApiXU from 'components/apis/apixu';
 import DarkSky from 'components/apis/darksky';
 import OpenWeather from 'components/apis/openweather';
 import Weatherbit from 'components/apis/weatherbit';
+import WeatherUnderground from 'components/apis/wunderground';
 
 var aerisData = require('../../fixtures/aeris.json');
+var apixuData = require('../../fixtures/apixu.json');
 var darkSkyData = require('../../fixtures/darksky.json');
 var openWeatherData = require('../../fixtures/openweathermap.json');
 var weatherbitData = require('../../fixtures/weatherbit.json');
+var wundergroundData = require('../../fixtures/wunderground.json');
 
 
 // Conversion functions
@@ -85,6 +89,35 @@ const aerisDataMassager = (data) => {
   return payload;
 };
 
+const apixuDataMassager = (data) => {
+  var forecasts = data['forecast']['forecastday'];
+  var payload = [];
+  var pop = [];
+  var windDir = [];  
+
+  for (var i in forecasts) {
+    var hours = forecasts[i]['hour'];
+
+    payload.push({
+      'time': convertUnixTime(forecasts[i]['date_epoch']),
+      'descrip': forecasts[i]['day']['condition']['text'],
+      'maxTemp': forecasts[i]['day']['maxtemp_f'], 
+      'minTemp': forecasts[i]['day']['mintemp_f'],
+      'humidity': Math.round(forecasts[i]['day']['avghumidity']),
+      'pop': (pop.reduce((a, b) => a + b, 0) / 24) * 100,
+      'windDir': convertWindDir(windDir.reduce((a, b) => a + b, 0) / 24),
+      'windSpeed': forecasts[i]['day']['maxwind_mph']
+    });
+
+    for (var i in hours) {
+      pop.push(hours[i]['will_it_rain']);
+      windDir.push(hours[i]['wind_degree']);
+    }    
+  }
+
+  return payload;
+};
+
 const darkSkyDataMassager = (data) => {
   var forecasts = data['daily']['data'];
   var payload = [];
@@ -143,6 +176,26 @@ const weatherbitDataMassager = (data) => {
 
   return payload;
 };
+     
+const wundergroundDataMassager = (data) => {
+  var forecasts = data['forecast']['simpleforecast']['forecastday'];
+  var payload = [];
+
+  for (var i = 0; i < 5; i++) {
+    payload.push({
+      'time': convertUnixTime(forecasts[i]['date']['epoch']),
+      'descrip': forecasts[i]['conditions'],
+      'maxTemp': forecasts[i]['high']['fahrenheit'],
+      'minTemp': forecasts[i]['low']['fahrenheit'],
+      'humidity': forecasts[i]['avehumidity'],
+      'pop': forecasts[i]['pop'],
+      'windDir': forecasts[i]['avewind']['dir'],
+      'windSpeed': forecasts[i]['avewind']['mph']
+    });
+  }
+
+  return payload;
+};
 
 
 // Home component
@@ -150,13 +203,15 @@ class Home extends Component {
   constructor() {
     super();
     this.state.aerisDaysForecast = aerisDataMassager(aerisData);
+    this.state.apixuDaysForecast = apixuDataMassager(apixuData);
     this.state.darkSkyDaysForecast = darkSkyDataMassager(darkSkyData);
     this.state.openWeatherDaysForecast = openWeatherDataMassager(openWeatherData);
     this.state.weatherbitDaysForecast = weatherbitDataMassager(weatherbitData);
+    this.state.wundergroundDaysForecast = wundergroundDataMassager(wundergroundData);
   }
 
   componentDidMount() {
-    console.log(this.state.openWeatherDaysForecast);
+    console.log(this.state.wundergroundDaysForecast);
   }
 
   render() {
@@ -164,9 +219,11 @@ class Home extends Component {
       <main>
         <p class={styles.text}>It feels like home</p>
         <Aeris daysForecast={this.state.aerisDaysForecast} />
+        <ApiXU daysForecast={this.state.apixuDaysForecast} />
         <DarkSky daysForecast={this.state.darkSkyDaysForecast} />
         <OpenWeather daysForecast={this.state.openWeatherDaysForecast} />
         <Weatherbit daysForecast={this.state.weatherbitDaysForecast} />
+        <WeatherUnderground daysForecast={this.state.wundergroundDaysForecast} />
       </main>
     );
   }
